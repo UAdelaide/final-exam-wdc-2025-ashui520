@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Dog Walking App</title>
+  <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
+  <style>
+    body {
+      background-color: #f0f0f0;
+      font-family: Comic Sans MS, cursive;
+      text-align: center;
+      animation: flicker 0.2s infinite;
+    }
+
+    @keyframes flicker {
+      0% { background-color: #fff; }
+      50% { background-color: #ffeb3b; }
+      100% { background-color: #fff; }
+    }
+
+    .dog-img {
+      width: 200px;
+      height: auto;
+      border: 10px dashed red;
+      filter: blur(1px) contrast(200%);
+    }
+
+    .hidden-label {
+      font-size: 0px;
+    }
+
+    button {
+      padding: 20px;
+      font-size: 1rem;
+      background-color: lime;
+      cursor: none;
+    }
+
+    input[type="text"] {
+      padding: 20px;
+      width: 500px;
+      font-size: 1.5rem;
+    }
+  </style>
+</head>
+<body>
+  <div id="app">
+    <h1>DOGZ4WALK DAILY DOGGO 🐶✨🦴</h1>
+    <p>So many buttons, pick one maybe?</p>
+
+    <div>
+      <button @click="fetchDog">Randomize 1</button>
+      <button @click="fetchDog">Try This</button>
+      <button @click="fetchDog">Click Me Maybe</button>
+    </div>
+
+    <div>
+      <img :src="dogImage" alt="" class="dog-img" />
+      <p><strong>Name:</strong> Mr. Woofy Barksalot</p>
+      <p><strong>Breed:</strong> Unknown Legendary Mix</p>
+      <p><strong>Age:</strong> Probably old</p>
+    </div>
+
+    <div>
+      <label class="hidden-label" for="notes">Add a note about your dog</label>
+      <input type="text" id="notes" placeholder="Type here..." />
+    </div>
+  </div>
+
+  <script>
+    const { createApp } = Vue;
+
+    createApp({
+      data() {
+        return {
+          dogImage: ''
+        };
+      },
+      methods: {
+        fetchDog() {
+          fetch('https://dog.ceo/api/breeds/image/random')
+            .then(res => res.json())
+            .then(data => {
+              this.dogImage = data.message;
+            });
+        }
+      },
+      mounted() {
+        this.fetchDog();
+      }
+    }).mount('#app');
+  </script>
+</body>
+</html>
