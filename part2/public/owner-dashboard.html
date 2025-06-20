@@ -63,7 +63,23 @@
     </div>
     <p v-else>No walk requests yet.</p>
   </div>
-
+  <script>
+    fetch('/api/auth/status')
+      .then(response => response.json())
+      .then(data => {
+        if (!data.isLoggedIn) {
+          window.location.href = '/';
+        } else if (data.user.role === 'owner' && window.location.pathname.includes('walker')) {
+          window.location.href = '/owner-dashboard.html';
+        } else if (data.user.role === 'walker' && window.location.pathname.includes('owner')) {
+          window.location.href = '/walker-dashboard.html';
+        }
+      })
+      .catch(error => {
+        console.error('Login status check error:', error);
+        window.location.href = '/';
+      });
+  </script>
   <script>
     const { createApp, ref, onMounted } = Vue;
 
