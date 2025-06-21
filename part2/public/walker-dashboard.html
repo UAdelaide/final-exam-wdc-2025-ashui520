@@ -10,6 +10,8 @@
 <body class="bg-light">
   <div id="app" class="container py-4">
     <h1 class="mb-4 text-success">Walker Dashboard</h1>
+    <!-- 新增注销按钮 -->
+    <button type="button" class="btn btn-danger mb-4" @click="logout">Logout</button>
 
     <!-- Alert messages -->
     <div v-if="message" class="alert alert-info">{{ message }}</div>
@@ -90,6 +92,18 @@
           }
         }
 
+        // 新增注销函数
+        async function logout() {
+          try {
+            await fetch('/api/auth/logout', {
+              method: 'POST'
+            });
+            window.location.href = '/';
+          } catch (err) {
+            console.error('Logout error:', err);
+          }
+        }
+
         onMounted(() => {
           loadWalkRequests();
         });
@@ -98,7 +112,8 @@
           walks,
           message,
           error,
-          applyToWalk
+          applyToWalk,
+          logout
         };
       }
     }).mount('#app');
