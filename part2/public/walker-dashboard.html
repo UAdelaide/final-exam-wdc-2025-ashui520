@@ -10,7 +10,7 @@
 <body class="bg-light">
   <div id="app" class="container py-4">
     <h1 class="mb-4 text-success">Walker Dashboard</h1>
-    <!-- 新增注销按钮 -->
+    <!-- Logout button -->
     <button type="button" class="btn btn-danger mb-4" @click="logout">Logout</button>
 
     <!-- Alert messages -->
@@ -61,7 +61,18 @@
         const walks = ref([]);
         const message = ref('');
         const error = ref('');
-        const user = 3;
+        const user = ref(null);
+
+        async function getCurrentUser() {
+          try {
+            const res = await fetch('/api/users/me');
+            if (!res.ok) throw new Error('Failed to get current user');
+            const data = await res.json();
+            user.value = data.id;
+          } catch (err) {
+            error.value = err.message;
+          }
+        }
 
         async function loadWalkRequests() {
           try {
@@ -75,10 +86,13 @@
 
         async function applyToWalk(requestId) {
           try {
+            if (!user.value) {
+              await getCurrentUser();
+            }
             const res = await fetch(`/api/walks/${requestId}/apply`, {
               method: 'POST',
               headers: { 'Content-Type': 'application/json' },
-              body: JSON.stringify({ walker_id: user })
+              body: JSON.stringify({ walker_id: user.value })
             });
             const result = await res.json();
 
@@ -92,7 +106,7 @@
           }
         }
 
-        // 新增注销函数
+        // Logout function
         async function logout() {
           try {
             await fetch('/api/auth/logout', {
@@ -104,7 +118,8 @@
           }
         }
 
-        onMounted(() => {
+        onMounted(async () => {
+          await getCurrentUser();
           loadWalkRequests();
         });
 
